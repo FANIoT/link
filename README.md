@@ -14,3 +14,11 @@ encoding them using user selected encoder.
 
 Link uses MQTT for communicating with the bottom layer and this communication can be customized
 using Protocol interface which defined in `app/app.go`.
+
+## API
+
+Link parses and decodes ach incoming data then stores them into Mongo database.
+For providing a way for other components to have data, it publishes data into the following topics:
+
+- `i1820/project/{project_id}/raw` raw format of data is not null
+- `i1820/project/{project_id}/data` decoded format of data is not null
