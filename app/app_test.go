@@ -29,7 +29,7 @@ func TestPipeline(t *testing.T) {
 	a.Run()
 	ts := time.Now()
 
-	a.projectStream <- types.Data{
+	a.projectStream <- &types.Data{
 		Raw:       []byte("Hello"),
 		Data:      nil,
 		Timestamp: ts,
@@ -38,6 +38,7 @@ func TestPipeline(t *testing.T) {
 		TxInfo:    nil,
 		Project:   "",
 	}
+	// wait until data traverse pipeline
 	time.Sleep(1 * time.Second)
 
 	var d types.Data
@@ -64,7 +65,7 @@ func BenchmarkPipeline(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		ts := time.Now()
 
-		a.projectStream <- types.Data{
+		a.projectStream <- &types.Data{
 			Raw:       []byte("Hello"),
 			Data:      nil,
 			Timestamp: ts,
