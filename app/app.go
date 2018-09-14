@@ -32,8 +32,8 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-// Application is a main component of uplink that consists of
-// uplink protocols and mqtt client
+// Application is a main part of link component that consists of
+// mqtt client and protocols that provide information for mqtt connectivity
 type Application struct {
 	cli paho.Client
 
@@ -48,27 +48,9 @@ type Application struct {
 	db      *mgo.Database
 
 	// pipeline channels
-	projectStream chan types.Data
-	decodeStream  chan types.Data
-	insertStream  chan types.Data
-}
-
-// Protocol is a uplink/downlink protocol like lan or lora
-type Protocol interface {
-	TxTopic() string
-	RxTopic() string
-
-	Name() string
-
-	Marshal([]byte) (types.Data, error)
-}
-
-// Model is a decoder/encoder interface like generic (based on user scripts) or aolab
-type Model interface {
-	Decode([]byte) interface{}
-	Encode(interface{}) []byte
-
-	Name() string
+	projectStream chan *types.Data
+	decodeStream  chan *types.Data
+	insertStream  chan *types.Data
 }
 
 // New creates new application. this function creates mqtt client
@@ -91,9 +73,9 @@ func New() *Application {
 	a.session = session
 
 	// pipeline channels
-	a.projectStream = make(chan types.Data)
-	a.decodeStream = make(chan types.Data)
-	a.insertStream = make(chan types.Data)
+	a.projectStream = make(chan *types.Data)
+	a.decodeStream = make(chan *types.Data)
+	a.insertStream = make(chan *types.Data)
 
 	return &a
 }
@@ -171,8 +153,8 @@ func (a *Application) Run() {
 
 	// pipeline stages
 	for i := 0; i < runtime.NumCPU(); i++ {
-		go a.project()
-		go a.decode()
-		go a.insert()
+		go a.projectStage()
+		go a.decodeStage()
+		go a.insertStage()
 	}
 }
