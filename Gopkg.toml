@@ -58,10 +58,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/I1820/pm"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/I1820/types"
 
 [[constraint]]
