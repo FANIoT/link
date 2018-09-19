@@ -976,6 +976,7 @@
     "github.com/gobuffalo/envy",
     "github.com/gobuffalo/suite",
     "github.com/gobuffalo/x/sessions",
+    "github.com/markbates/grift/grift",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
     "github.com/prometheus/client_golang/prometheus",
