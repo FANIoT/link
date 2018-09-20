@@ -1,13 +1,10 @@
 package actions
 
 import (
+	"net/http"
 	"strconv"
 	"time"
 
-	linkapp "github.com/I1820/link/app"
-	"github.com/I1820/link/models/aolab"
-	"github.com/I1820/link/protocols/lan"
-	"github.com/I1820/link/protocols/lora"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/buffalo/middleware/ssl"
@@ -25,7 +22,6 @@ import (
 // application is being run. Default is "development".
 var ENV = envy.Get("GO_ENV", "development")
 var app *buffalo.App
-var linkApp *linkapp.Application
 
 // App is where all routes and middleware for buffalo
 // should be defined. This is the nerve center of your
@@ -46,7 +42,7 @@ func App() *buffalo.App {
 			SSLProxyHeaders: map[string]string{"X-Forwarded-Proto": "https"},
 		}))
 
-		// Set the request content type to JSON
+		// set the request content type to JSON (until new version of buffalo)
 		app.Use(middleware.SetContentType("application/json"))
 		app.Use(func(next buffalo.Handler) buffalo.Handler {
 			return func(c buffalo.Context) error {
@@ -57,14 +53,12 @@ func App() *buffalo.App {
 				return next(c)
 			}
 		})
-		// Set the request content type to JSON
-		app.Use(middleware.SetContentType("application/json"))
 
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
 		}
 
-		// Collectors
+		// prometheus collectors
 		rds := prometheus.NewHistogramVec(
 			prometheus.HistogramOpts{
 				Namespace: "link",
@@ -96,15 +90,14 @@ func App() *buffalo.App {
 			}
 		})
 
-		// LinkApp
-		linkApp = linkapp.New()
-		linkApp.RegisterProtocol(lora.Protocol{})
-		linkApp.RegisterProtocol(lan.Protocol{})
-		linkApp.RegisterModel(aolab.Model{})
-		linkApp.Run()
-
 		// Routes
 		app.GET("/about", AboutHandler)
+		mqtt := app.Group("/mqtt")
+		{
+			mqtt.POST("/auth", func(c buffalo.Context) error {
+				return c.Render(http.StatusOK, r.JSON(true))
+			})
+		}
 		api := app.Group("/api")
 		{
 			mr := ModelsResource{}
