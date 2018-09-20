@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/I1820/link/pm"
 	"github.com/sirupsen/logrus"
 )
 
@@ -32,7 +33,14 @@ func (a *Application) projectStage() {
 	}).Info("Project pipeline stage")
 
 	for d := range a.projectStream {
-		// TODO
+		t, err := pm.ThingByID(context.Background(), d.ThingID)
+		if err != nil {
+			a.Logger.WithFields(logrus.Fields{
+				"component": "link",
+			}).Errorf("Project find error: %s", err)
+		}
+		d.Project = t.Project
+
 		a.decodeStream <- d
 	}
 }
