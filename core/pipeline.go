@@ -97,7 +97,7 @@ func (a *Application) insertStage() {
 	}).Info("Insert pipeline stage")
 
 	for d := range a.insertStream {
-		if _, err := a.db.Collection("data").InsertOne(context.Background(), d); err != nil {
+		if _, err := a.db.Collection(fmt.Sprintf("data.%s.%s", d.Project, d.ThingID)).InsertOne(context.Background(), d); err != nil {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
 			}).Errorf("Mongo Insert: %s", err)
