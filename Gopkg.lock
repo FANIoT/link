@@ -19,19 +19,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:579c768dd527f8c9e456d2016ff7489c00be22ccc23915d174bc015b32218b05"
-  name = "github.com/I1820/lanserver"
-  packages = ["models"]
-  pruneopts = "UT"
-  revision = "fedd5950c1a523485b0df360317a5cad3d7a5cb7"
-
-[[projects]]
-  branch = "master"
-  digest = "1:9efa8274855d8451e50aa7da3a42b5e43d1e07507584622ec9a0d4e0719da626"
+  digest = "1:f2067ac2f292daca86e93686da1252987285b93dc46feab8f9936589c0f7add8"
   name = "github.com/I1820/types"
   packages = ["."]
   pruneopts = "UT"
-  revision = "16090f0e3a9d126216d4339bd8d6c41aaa216e36"
+  revision = "3cd8df9e342e590b6835cff5f1458e16ee54ac3d"
 
 [[projects]]
   digest = "1:2aff5edb9bccd2974090fddb17ca7ab05a3f5c983db567c30c7f0b53404f5783"
@@ -167,11 +159,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a48c885db9d8252fa02f6145f8e4e2c9e530554e07bff5cea55e39ec61bfe21a"
+  digest = "1:c7013bd7dd4c89217a497f7517c8f8edabdbb406af86b293288923fa0d3a24f5"
   name = "github.com/gobuffalo/events"
   packages = ["."]
   pruneopts = "UT"
-  revision = "0bfc5735cd247de2d2e8fefe262de95b0bb86a30"
+  revision = "867dc2348bada056228527991c07947c90c7bb14"
 
 [[projects]]
   digest = "1:8ac794054bf9c75011121c3f19bb733bb7b4888b81b069959ebfd30b3b9c09bd"
@@ -199,6 +191,14 @@
   pruneopts = "UT"
   revision = "bfe537384e6f4cf8a4d9d149bae4f519b186c9fe"
   version = "v1.1.5"
+
+[[projects]]
+  branch = "master"
+  digest = "1:257fafe8f23510db4e9e118d53ef2e084524b19735ab9c822b3626713deb31b1"
+  name = "github.com/gobuffalo/mapi"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5485bb0900f530773d7f5d95f1b8c59f2e2021b3"
 
 [[projects]]
   digest = "1:f45caa3c5c4541c3a73b9fa2b38db97fcbda57618eaaaf45dd5c728362ad8f09"
@@ -405,15 +405,15 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:dc7bbbfd7374fbcfbf5d51394729f226e4171860fa9d5e853e3d3856636b7e59"
+  digest = "1:a0e5001a7f78a4966461684843d530954d3a9e565889165b0f5f3f17e5ddd515"
   name = "github.com/markbates/refresh"
   packages = [
     "refresh",
     "refresh/web",
   ]
   pruneopts = "UT"
-  revision = "d6a891cba4720239223190aeef7c0b06efc5c39d"
-  version = "v1.4.5"
+  revision = "434b3b0180f5effc7ed3042c4039a08b2416fc37"
+  version = "v1.4.6"
 
 [[projects]]
   digest = "1:1f74d2e87dec3e6d4ddbfc8bf23f9b89be85903131c2ebbb6557eb2ec646bc28"
@@ -548,6 +548,14 @@
   version = "v3.1"
 
 [[projects]]
+  digest = "1:808cdddf087fb64baeae67b8dfaee2069034d9704923a3cb8bd96a995421a625"
+  name = "github.com/patrickmn/go-cache"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a3647f8e31d79543b2d0f0ae2fe5c379d72cedc0"
+  version = "v2.1.0"
+
+[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -597,7 +605,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8c49953a1414305f2ff5465147ee576dd705487c35b15918fcd4efdc0cb7a290"
+  digest = "1:ef1dd9945e58ee9b635273d28c0ef3fa3742a7dedc038ebe207fd63e6ce000ef"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
@@ -606,7 +614,7 @@
     "xfs",
   ]
   pruneopts = "UT"
-  revision = "05ee40e3a273f7245e8777337fc7b46e533a9a92"
+  revision = "418d78d0b9a7b7de3a6bbc8a23def624cc977bb2"
 
 [[projects]]
   digest = "1:0b8dd7447e420afff0260179dc892711e837edd1d446bc78dab924624a3c3c81"
@@ -794,14 +802,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:49edbccdd6fb213dcf45486b0c939b788740451e5f2ff77aa42ca742d10da449"
+  digest = "1:3bb4674103eef9bf860b88e59048c67ad646de4274ea7de8d71d16e9f8209bff"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "1561086e645b2809fb9f8a1e2a38160bf8d53bf4"
+  revision = "d641721ec2dead6fe5ca284096fe4b1fcd49e427"
 
 [[projects]]
   digest = "1:8029e9743749d4be5bc9f7d42ea1659471767860f0cdc34d37c3111bd308a295"
@@ -846,7 +854,6 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/I1820/lanserver/models",
     "github.com/I1820/types",
     "github.com/eclipse/paho.mqtt.golang",
     "github.com/gobuffalo/buffalo",
@@ -856,9 +863,9 @@
     "github.com/gobuffalo/envy",
     "github.com/gobuffalo/suite",
     "github.com/gobuffalo/x/sessions",
-    "github.com/markbates/grift/grift",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
+    "github.com/patrickmn/go-cache",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/rs/cors",
