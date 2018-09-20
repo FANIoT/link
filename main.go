@@ -12,16 +12,14 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/I1820/link/actions"
+	"github.com/I1820/link/mqtt"
 )
 
 func main() {
 	fmt.Println("18.20 at Sep 07 2016 7:20 IR721")
 
-	buffaloApp := actions.App()
-	if err := buffaloApp.Serve(); err != nil {
-		log.Fatal(err)
+	mqtt.New().Run()
+	for {
 	}
 }
