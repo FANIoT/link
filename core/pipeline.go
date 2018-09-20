@@ -105,7 +105,7 @@ func (a *Application) insertStage() {
 		} else {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
-			}).Infof("Insert into database: %#v", d)
+			}).Infof("Insert into database: %v", d)
 		}
 	}
 }
