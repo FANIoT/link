@@ -110,6 +110,14 @@ func (a *Application) Run() {
 // incomming data must have raw, at, thingid and assets section of data
 // please note that this function is a blocking function.
 func (a *Application) Data(s types.State) error {
+	if s.Raw == nil || s.At.IsZero() {
+		return fmt.Errorf("Raw and At must not be zero")
+	}
+
+	if s.ThingID == "" || s.Asset == "" {
+		return fmt.Errorf("ThingID and Asset must not be empty")
+	}
+
 	a.projectStream <- &s
 	return nil
 }
