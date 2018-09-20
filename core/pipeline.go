@@ -37,6 +37,8 @@ func (a *Application) projectStage() {
 		if err != nil {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
+				"asset":     d.Asset,
+				"thingid":   d.ThingID,
 			}).Errorf("Project find error: %s", err)
 			continue
 		}
@@ -69,20 +71,31 @@ func (a *Application) decodeStage() {
 			d.Value.Array = d.Raw.([]interface{})
 		}
 
-		// marshal data into json
-		b, err := json.Marshal(d)
-		if err != nil {
+		go func() {
+			// marshal data into json
+			b, err := json.Marshal(d)
+			if err != nil {
+				a.Logger.WithFields(logrus.Fields{
+					"component": "link",
+					"asset":     d.Asset,
+					"thingid":   d.ThingID,
+				}).Errorf("Marshal data error: %s", err)
+			}
+
+			// publish data with both raw and typed formats
+			// i1820/projects/{project_id}/things/{thing_id}/assets/{asset_name}/state
+			a.cli.Publish(fmt.Sprintf("i1820/projects/%s/things/%s/assets/%s/state", d.Project, d.ThingID, d.Asset), 0, false, b)
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
-			}).Errorf("Marshal data error: %s", err)
-		}
-
-		// publish data with both raw and typed formats
-		// i1820/projects/{project_id}/things/{thing_id}/assets/{asset_name}/state
-		a.cli.Publish(fmt.Sprintf("i1820/projects/%s/things/%s/assets/%s/state", d.Project, d.ThingID, d.Asset), 0, false, b)
+				"asset":     d.Asset,
+				"thingid":   d.ThingID,
+			}).Infof("Publish decoded data: %s", d.Project)
+		}()
 		a.Logger.WithFields(logrus.Fields{
 			"component": "link",
-		}).Infof("Publish decoded data: %s", d.Project)
+			"asset":     d.Asset,
+			"thingid":   d.ThingID,
+		}).Infof("Decode with value: %+v", d.Value)
 
 		a.insertStream <- d
 	}
@@ -101,11 +114,15 @@ func (a *Application) insertStage() {
 		if _, err := a.db.Collection(fmt.Sprintf("data.%s.%s", d.Project, d.ThingID)).InsertOne(context.Background(), d); err != nil {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
+				"asset":     d.Asset,
+				"thingid":   d.ThingID,
 			}).Errorf("Mongo Insert: %s", err)
 		} else {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
-			}).Infof("Insert into database: %v", d)
+				"asset":     d.Asset,
+				"thingid":   d.ThingID,
+			}).Infof("Insert into database with value: %+v", d.Value)
 		}
 	}
 }
