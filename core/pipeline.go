@@ -38,6 +38,7 @@ func (a *Application) projectStage() {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
 			}).Errorf("Project find error: %s", err)
+			continue
 		}
 		d.Project = t.Project
 
