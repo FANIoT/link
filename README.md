@@ -20,5 +20,4 @@ using Protocol interface which defined in `app/app.go`.
 Link parses and decodes ach incoming data then stores them into Mongo database.
 For providing a way for other components to have data, it publishes data into the following topics:
 
-- `i1820/project/{project_id}/raw` raw format of data is not null
-- `i1820/project/{project_id}/data` decoded format of data is not null
+- `i1820/projects/{project_id}/things/{thing_id}/assets/{asset_name}/data` raw and typed format of data
