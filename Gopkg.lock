@@ -480,15 +480,13 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:d74480f73f1e6224f170293767e73316c5b0f7c134e711418ecc43d02c153426"
+  digest = "1:c990d4427f9d6c34549935233b7034bed5460bc4db829f3cdf3392160f35dcaf"
   name = "github.com/mongodb/mongo-go-driver"
   packages = [
     "bson",
     "bson/builder",
     "bson/decimal",
     "bson/elements",
-    "bson/internal/llbson",
     "bson/objectid",
     "bson/parser",
     "bson/parser/ast",
@@ -537,7 +535,8 @@
     "mongo/updateopt",
   ]
   pruneopts = "UT"
-  revision = "cf1b35aa25445f64fde447f064db6760cc489961"
+  revision = "b75c1ad5f277465dc7bdcc3d14c5177a89b6a4f9"
+  version = "v0.0.13"
 
 [[projects]]
   digest = "1:9f6f7ba2d9477766a32520ac15339c00d5c1baebb84091d43c9f0d68c04b78bb"
