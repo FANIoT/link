@@ -33,6 +33,8 @@ func init() {
 }
 
 // Service of link component
+// this service provide a way for users to send their data
+// based on mqtt.
 type Service struct {
 	cli paho.Client
 	app *core.Application
@@ -80,7 +82,7 @@ func (s *Service) handler(client paho.Client, message paho.Message) {
 
 // Run runs mqtt service
 func (s *Service) Run() error {
-	// Create an MQTT client
+	// Create an MQTT client for mqtt service
 	/*
 		Port: 1883
 		CleanSession: True
