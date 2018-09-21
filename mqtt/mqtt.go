@@ -27,6 +27,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+
+}
+
 // Service of link component
 type Service struct {
 	cli paho.Client
@@ -88,7 +93,6 @@ func (s *Service) Run() error {
 	opts := paho.NewClientOptions()
 	opts.AddBroker(envy.Get("USR_BROKER_URL", "tcp://127.0.0.1:1883"))
 	opts.SetClientID(fmt.Sprintf("I1820-outer-link-%d", rand.Intn(1024)))
-	opts.SetOrderMatters(false)
 	opts.SetOnConnectHandler(func(client paho.Client) {
 		if t := s.cli.Subscribe("$share/i1820-link/things/+/state", 0, s.handler); t.Error() != nil {
 			s.app.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
@@ -100,7 +104,7 @@ func (s *Service) Run() error {
 	if t := s.cli.Connect(); t.Wait() && t.Error() != nil {
 		return t.Error()
 	}
-	go s.app.Run()
+	s.app.Run()
 
 	return nil
 }
