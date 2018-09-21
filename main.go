@@ -23,7 +23,7 @@ func main() {
 	fmt.Println("18.20 at Sep 07 2016 7:20 IR721")
 
 	if err := mqtt.New().Run(); err != nil {
-		log.Fatal("Fucked up from start: %s", err)
+		log.Fatalf("MQTT Service failed with %s", err)
 	}
 
 	sigc := make(chan os.Signal, 1)
