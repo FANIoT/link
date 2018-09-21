@@ -12,6 +12,9 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"os/signal"
 
 	"github.com/I1820/link/mqtt"
 )
@@ -19,7 +22,11 @@ import (
 func main() {
 	fmt.Println("18.20 at Sep 07 2016 7:20 IR721")
 
-	mqtt.New().Run()
-	for {
+	if err := mqtt.New().Run(); err != nil {
+		log.Fatal("Fucked up from start: %s", err)
 	}
+
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc, os.Interrupt)
+	<-sigc
 }
