@@ -55,6 +55,7 @@ func TTNHandler(c buffalo.Context) error {
 		"component": "http service",
 	}).Infof("Incoming data from %s : %s with pid: %s", rq.AppID, rq.DevID, projectID)
 
+	// Test only TODO remove it
 	if rq.PayloadFields != nil {
 		fmt.Println(rq.PayloadFields)
 	}
