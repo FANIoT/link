@@ -7,13 +7,37 @@
 ## Introduction
 
 Link component of I1820 platfrom. This service collects
-raw data from bottom layer (protocols), stores them into mongo database
+raw data from bottom layer (protocols like mqtt, coap and http), stores them into mongo database
 and decodes them using user selected decoder.
 This service also sends data into bottom layer (protocols) after
 encoding them using user selected encoder.
 
-Link uses MQTT for communicating with the bottom layer and this communication can be customized
-using Protocol interface which defined in `app/app.go`.
+There is two way for setting state in the I1820 platform.
+First one is to set a particular asset's state on a specific device with the following JSON:
+
+```json
+{
+  "value": 10.2,
+  "at": "1970-01-01T00:00:00Z"
+}
+```
+
+The second one is to set a particular device's state with the following JSON:
+
+```json
+{
+  "asset_name": {
+    "value": 10.2,
+    "at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+
+## MQTT Protocol
+For changing device state using mqtt protocol you can use following topic:
+
+- `things/{thing_id}/state`
 
 ## API
 
