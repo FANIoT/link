@@ -572,6 +572,22 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:f8b1b55a7a521ffcec5c359087b2c471ab6c1b4ae96a9771516f11d913187b72"
+  name = "github.com/polydawn/refmt"
+  packages = [
+    ".",
+    "cbor",
+    "json",
+    "obj",
+    "obj/atlas",
+    "shared",
+    "tok",
+  ]
+  pruneopts = "UT"
+  revision = "332d9fceb7243532c37e887f926b529d9087526f"
+
+[[projects]]
+  branch = "master"
   digest = "1:45017c911c56edf487eca83fd5871c818f39930d87ff8a555351a149f34ae1ad"
   name = "github.com/prometheus/client_golang"
   packages = [
@@ -865,6 +881,7 @@
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
     "github.com/patrickmn/go-cache",
+    "github.com/polydawn/refmt",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/rs/cors",
