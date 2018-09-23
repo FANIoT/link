@@ -52,7 +52,7 @@ func TTNHandler(c buffalo.Context) error {
 		return c.Error(http.StatusBadRequest, err)
 	}
 	coreApp.Logger.WithFields(logrus.Fields{
-		"component": "http service",
+		"component": "ttn service",
 	}).Infof("Incoming data from %s : %s with pid: %s", rq.AppID, rq.DevID, projectID)
 
 	// Test only TODO remove it
@@ -63,7 +63,7 @@ func TTNHandler(c buffalo.Context) error {
 	var states map[string]interface{}
 	if err := cbor.Unmarshal(rq.PayloadRaw, &states); err != nil {
 		coreApp.Logger.WithFields(logrus.Fields{
-			"component": "http service",
+			"component": "ttn service",
 		}).Errorf("Incoming data from %s : %s with pid: %s is not a valid cbor (%q)", rq.AppID, rq.DevID, projectID, rq.PayloadRaw)
 		return c.Render(http.StatusOK, r.JSON(true))
 	}
