@@ -33,16 +33,19 @@ func (a *Application) projectStage() {
 	}).Info("Project pipeline stage")
 
 	for d := range a.projectStream {
-		t, err := pm.ThingByID(context.Background(), d.ThingID)
-		if err != nil {
-			a.Logger.WithFields(logrus.Fields{
-				"component": "link",
-				"asset":     d.Asset,
-				"thingid":   d.ThingID,
-			}).Errorf("Project find error: %s", err)
-			continue
+		// retrieve project when it is needed
+		if d.Project == "" {
+			t, err := pm.ThingByID(context.Background(), d.ThingID)
+			if err != nil {
+				a.Logger.WithFields(logrus.Fields{
+					"component": "link",
+					"asset":     d.Asset,
+					"thingid":   d.ThingID,
+				}).Errorf("Project find error: %s", err)
+				continue
+			}
+			d.Project = t.Project
 		}
-		d.Project = t.Project
 
 		a.decodeStream <- d
 	}
