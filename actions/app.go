@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/I1820/link/core"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/buffalo/middleware/ssl"
@@ -22,6 +23,7 @@ import (
 // application is being run. Default is "development".
 var ENV = envy.Get("GO_ENV", "development")
 var app *buffalo.App
+var coreApp *core.Application
 
 // App is where all routes and middleware for buffalo
 // should be defined. This is the nerve center of your
@@ -57,6 +59,11 @@ func App() *buffalo.App {
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
 		}
+
+		// core application provides a simple way for parse and store
+		// incoming data
+		coreApp = core.New()
+		coreApp.Run()
 
 		// prometheus collectors
 		rds := prometheus.NewHistogramVec(
@@ -98,12 +105,9 @@ func App() *buffalo.App {
 				return c.Render(http.StatusOK, r.JSON(true))
 			})
 		}
-		api := app.Group("/api")
+		ttn := app.Group("/ttn")
 		{
-			mr := ModelsResource{}
-			api.Resource("/models", mr)
-			api.POST("/send", SendHandler)
-
+			ttn.POST("/{project_id}", TTNHandler)
 		}
 		app.GET("/metrics", buffalo.WrapHandler(promhttp.Handler()))
 	}
