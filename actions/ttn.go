@@ -26,13 +26,12 @@ import (
 
 // TTNRequest is a data format that ttn http integration module sends
 type TTNRequest struct {
-	AppID          string                 `json:"app_id"`
-	DevID          string                 `json:"dev_id"`
-	HardwareSerial string                 `json:"hardware_serial"`
-	Port           int                    `json:"port"`
-	Counter        int                    `json:"counter"`
-	PayloadRaw     []byte                 `json:"payload_raw"`
-	PayloadFields  map[string]interface{} `json:"payload_fields,omitempty"`
+	AppID          string `json:"app_id"`
+	DevID          string `json:"dev_id"`
+	HardwareSerial string `json:"hardware_serial"`
+	Port           int    `json:"port"`
+	Counter        int    `json:"counter"`
+	PayloadRaw     []byte `json:"payload_raw"`
 
 	Metadata struct {
 		Time time.Time `json:"time"`
@@ -55,12 +54,7 @@ func TTNHandler(c buffalo.Context) error {
 		"component": "ttn service",
 	}).Infof("Incoming data from %s : %s with pid: %s", rq.AppID, rq.DevID, projectID)
 
-	// Test only TODO remove it
-	if rq.PayloadFields != nil {
-		fmt.Println(rq.PayloadFields)
-	}
-
-	var states map[string]interface{}
+	var states map[interface{}]interface{}
 	if err := cbor.Unmarshal(rq.PayloadRaw, &states); err != nil {
 		coreApp.Logger.WithFields(logrus.Fields{
 			"component": "ttn service",
@@ -73,7 +67,7 @@ func TTNHandler(c buffalo.Context) error {
 			Raw: value,
 			At:  rq.Metadata.Time,
 			// TODO ThingID:
-			Asset: name,
+			Asset: fmt.Sprintf("%v", name), // convert anything to string (is there any better way?)
 		}
 		fmt.Println(state)
 	}
