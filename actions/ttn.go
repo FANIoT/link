@@ -20,8 +20,8 @@ import (
 
 	"github.com/I1820/types"
 	"github.com/gobuffalo/buffalo"
-	"github.com/polydawn/refmt/cbor"
 	"github.com/sirupsen/logrus"
+	"github.com/ugorji/go/codec"
 )
 
 // TTNRequest is a data format that ttn http integration module sends
@@ -52,13 +52,18 @@ func TTNHandler(c buffalo.Context) error {
 	}
 	coreApp.Logger.WithFields(logrus.Fields{
 		"component": "ttn service",
-	}).Infof("Incoming data from %s : %s with pid: %s", rq.AppID, rq.DevID, projectID)
+	}).Infof("Incoming data from %s @ %s with pid: %s", rq.DevID, rq.AppID, projectID)
 
-	var states map[interface{}]interface{}
-	if err := cbor.Unmarshal(rq.PayloadRaw, &states); err != nil {
+	// return if there is no payload
+	if rq.PayloadRaw == nil {
+		return c.Render(http.StatusOK, r.JSON(true))
+	}
+
+	states := make(map[interface{}]interface{})
+	if err := codec.NewDecoderBytes(rq.PayloadRaw, new(codec.CborHandle)).Decode(&states); err != nil {
 		coreApp.Logger.WithFields(logrus.Fields{
 			"component": "ttn service",
-		}).Errorf("Incoming data from %s : %s with pid: %s is not a valid cbor (%q)", rq.AppID, rq.DevID, projectID, rq.PayloadRaw)
+		}).Errorf("Incoming data from %s @ %s with pid: %s is not a valid cbor (%q) %s", rq.DevID, rq.AppID, projectID, rq.PayloadRaw, err)
 		return c.Render(http.StatusOK, r.JSON(true))
 	}
 
