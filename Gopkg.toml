@@ -73,5 +73,5 @@
   version = "2.1.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/polydawn/refmt"
+  name = "github.com/ugorji/go"
+  version = "1.1.1"
