@@ -49,6 +49,8 @@ func (a *Application) projectStage() {
 }
 
 // decodeStage decodes each data and fills value section.
+// as you see there is no specific decode happens here so models
+// must do they job somewhere else
 func (a *Application) decodeStage() {
 	// This thread is mine
 	runtime.LockOSThread()
