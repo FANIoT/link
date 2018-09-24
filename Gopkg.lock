@@ -19,14 +19,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:91018a1a71d7d4dc7346d0d9867a32eb3e87560f8d22ea1cdc2a784e8fa5cb63"
+  digest = "1:70ea8853894297351bc68b25dc2c3a61f32c9341d7596bb9ed828dc73873349b"
   name = "github.com/I1820/types"
   packages = [
     ".",
     "connectivity",
   ]
   pruneopts = "UT"
-  revision = "e1578e4e91b2af23d3faff3ae9d53894e7297f90"
+  revision = "9a4d5d6f6f7900857ddd0d9ffe2a545c8cd54344"
 
 [[projects]]
   digest = "1:2aff5edb9bccd2974090fddb17ca7ab05a3f5c983db567c30c7f0b53404f5783"
