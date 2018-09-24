@@ -98,7 +98,7 @@ func TTNHandler(c buffalo.Context) error {
 			Project: projectID,
 			Asset:   fmt.Sprintf("%v", name), // convert anything to string (is there any better way?)
 		}
-		fmt.Println(state)
+		coreApp.Data(state)
 	}
 
 	return c.Render(http.StatusOK, r.JSON(true))
