@@ -19,9 +19,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:75f9a1481cf528772b05f30202a6fcd2bb7ec281683b2076778a31c04860dfee"
+  digest = "1:91018a1a71d7d4dc7346d0d9867a32eb3e87560f8d22ea1cdc2a784e8fa5cb63"
   name = "github.com/I1820/types"
-  packages = ["."]
+  packages = [
+    ".",
+    "connectivity",
+  ]
   pruneopts = "UT"
   revision = "e1578e4e91b2af23d3faff3ae9d53894e7297f90"
 
@@ -499,6 +502,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:645110e089152bd0f4a011a2648fbb0e4df5977be73ca605781157ac297f50c4"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "fa473d140ef3c6adf42d6b391fe76707f1f243c8"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:ca4fde30b33f3f8d39ddaa544308b4bdaac1c48f290d6d5148565ff0b03a7d80"
   name = "github.com/mongodb/mongo-go-driver"
   packages = [
@@ -874,6 +885,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/I1820/types",
+    "github.com/I1820/types/connectivity",
     "github.com/eclipse/paho.mqtt.golang",
     "github.com/gobuffalo/buffalo",
     "github.com/gobuffalo/buffalo/middleware",
@@ -882,6 +894,7 @@
     "github.com/gobuffalo/envy",
     "github.com/gobuffalo/suite",
     "github.com/gobuffalo/x/sessions",
+    "github.com/mitchellh/mapstructure",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
     "github.com/patrickmn/go-cache",
