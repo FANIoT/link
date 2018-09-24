@@ -16,10 +16,14 @@ package actions
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
+	"github.com/I1820/link/pm"
 	"github.com/I1820/types"
+	"github.com/I1820/types/connectivity"
 	"github.com/gobuffalo/buffalo"
+	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
 	"github.com/ugorji/go/codec"
 )
@@ -45,6 +49,7 @@ type TTNRequest struct {
 // more protocol and better configuration
 func TTNHandler(c buffalo.Context) error {
 	projectID := c.Param("project_id")
+	var thingID string
 
 	var rq TTNRequest
 	if err := c.Bind(&rq); err != nil {
@@ -59,6 +64,24 @@ func TTNHandler(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.JSON(true))
 	}
 
+	ts, err := pm.ThingsByProject(c, projectID)
+	if err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+	for _, t := range ts {
+		if c, ok := t.Connectivities["ttn"]; ok {
+			var ttnC connectivity.TTN
+			if err := mapstructure.Decode(c, &ttnC); err == nil {
+				if strings.ToLower(ttnC.DeviceEUI) == strings.ToLower(rq.HardwareSerial) && strings.ToLower(ttnC.ApplicationID) == strings.ToLower(rq.AppID) {
+					thingID = t.ID
+				}
+			}
+		}
+	}
+	if thingID == "" {
+		return c.Error(http.StatusNotFound, fmt.Errorf("Device %s on Application %s with ProjectID %s Not Found", rq.DevID, rq.AppID, projectID))
+	}
+
 	states := make(map[interface{}]interface{})
 	if err := codec.NewDecoderBytes(rq.PayloadRaw, new(codec.CborHandle)).Decode(&states); err != nil {
 		coreApp.Logger.WithFields(logrus.Fields{
@@ -69,10 +92,11 @@ func TTNHandler(c buffalo.Context) error {
 
 	for name, value := range states {
 		state := types.State{
-			Raw: value,
-			At:  rq.Metadata.Time,
-			// TODO ThingID:
-			Asset: fmt.Sprintf("%v", name), // convert anything to string (is there any better way?)
+			Raw:     value,
+			At:      rq.Metadata.Time,
+			ThingID: thingID,
+			Project: projectID,
+			Asset:   fmt.Sprintf("%v", name), // convert anything to string (is there any better way?)
 		}
 		fmt.Println(state)
 	}
