@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/I1820/types"
 	"github.com/gobuffalo/envy"
 	mgo "github.com/mongodb/mongo-go-driver/mongo"
 	cache "github.com/patrickmn/go-cache"
@@ -41,22 +42,14 @@ func init() {
 
 }
 
-// Thing represents pm component things in smaller scope.
-// please always check https://github.com/I1820/pm for more information
-type Thing struct {
-	ID      string   `json:"id" bson:"_id,omitempty"`
-	Tokens  []string `json:"tokens" bson:"tokens"`
-	Project string   `json:"project" bson:"project"`
-}
-
 // ThingByID finds thing by its id in pm component database.
-func ThingByID(ctx context.Context, id string) (Thing, error) {
+func ThingByID(ctx context.Context, id string) (types.Thing, error) {
 	// check cache in the first place
 	if th, found := c.Get(id); found {
-		return th.(Thing), nil
+		return th.(types.Thing), nil
 	}
 
-	var t Thing
+	var t types.Thing
 	// find things by its id (please note that it must be activated)
 	dr := db.Collection("things").FindOne(ctx, bson.NewDocument(
 		bson.EC.Boolean("status", true),
