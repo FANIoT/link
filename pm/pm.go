@@ -67,3 +67,39 @@ func ThingByID(ctx context.Context, id string) (types.Thing, error) {
 
 	return t, nil
 }
+
+// ThingsByProject finds all things that belong to given project id
+// please note that this function cache all things by their project id
+func ThingsByProject(ctx context.Context, id string) ([]types.Thing, error) {
+	// check cache in the first place
+	if th, found := c.Get(id); found {
+		return th.([]types.Thing), nil
+	}
+
+	ts := make([]types.Thing, 0)
+
+	cur, err := db.Collection("things").Find(ctx, bson.NewDocument(
+		bson.EC.String("project", id),
+	))
+	if err != nil {
+		return ts, err
+	}
+
+	for cur.Next(ctx) {
+		var t types.Thing
+
+		if err := cur.Decode(&t); err != nil {
+			return ts, err
+		}
+
+		ts = append(ts, t)
+	}
+	if err := cur.Close(ctx); err != nil {
+		return ts, err
+	}
+
+	// Set the value of the key project_id to things, with the default expiration time
+	c.Set(id, ts, cache.DefaultExpiration)
+
+	return ts, err
+}
