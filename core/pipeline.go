@@ -63,13 +63,31 @@ func (a *Application) decodeStage() {
 	}).Info("Decode pipeline stage")
 
 	for d := range a.decodeStream {
-		switch d.Raw.(type) {
+		switch v := d.Raw.(type) {
 		case string:
-			d.Value.String = d.Raw.(string)
+			d.Value.String = v
 		case bool:
-			d.Value.Boolean = d.Raw.(bool)
+			d.Value.Boolean = v
 		case float64:
-			d.Value.Number = d.Raw.(float64)
+			d.Value.Number = v
+		case float32:
+			d.Value.Number = float64(v)
+		case int8:
+			d.Value.Number = float64(v)
+		case int16:
+			d.Value.Number = float64(v)
+		case int32:
+			d.Value.Number = float64(v)
+		case int64:
+			d.Value.Number = float64(v)
+		case uint8:
+			d.Value.Number = float64(v)
+		case uint16:
+			d.Value.Number = float64(v)
+		case uint32:
+			d.Value.Number = float64(v)
+		case uint64:
+			d.Value.Number = float64(v)
 		case interface{}:
 			d.Value.Object = d.Raw
 		case []interface{}:
