@@ -23,6 +23,7 @@ import (
 	"github.com/I1820/types"
 	"github.com/I1820/types/connectivity"
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/envy"
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
 	"github.com/ugorji/go/codec"
@@ -40,6 +41,18 @@ type TTNRequest struct {
 	Metadata struct {
 		Time time.Time `json:"time"`
 	} `json:"metadata"`
+}
+
+// TTNAuthorize checks Authorization header to find out is it a valid TheThingsNetwork request
+// Please consider that this function is a miidleware
+func TTNAuthorize(next buffalo.Handler) buffalo.Handler {
+	return func(c buffalo.Context) error {
+		authString := c.Request().Header.Get("Authorization")
+		if authString != envy.Get("TTN_SECRET", "ttnIStheBEST") {
+			return c.Error(http.StatusUnauthorized, fmt.Errorf("unathorized access token"))
+		}
+		return next(c)
+	}
 }
 
 // TTNHandler provides an endpoint for TheThingsNetwork HTTP integration

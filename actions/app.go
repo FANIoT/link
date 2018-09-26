@@ -99,14 +99,17 @@ func App() *buffalo.App {
 
 		// Routes
 		app.GET("/about", AboutHandler)
+		// mqtt service (authorization module)
 		mqtt := app.Group("/mqtt")
 		{
 			mqtt.POST("/auth", func(c buffalo.Context) error {
 				return c.Render(http.StatusOK, r.JSON(true))
 			})
 		}
+		// ttn integration module
 		ttn := app.Group("/ttn")
 		{
+			ttn.Use(TTNAuthorize)
 			ttn.POST("/{project_id}", TTNHandler)
 		}
 		app.GET("/metrics", buffalo.WrapHandler(promhttp.Handler()))
