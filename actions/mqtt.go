@@ -74,6 +74,12 @@ func (VernemqAuthPlugin) OnSubscribe(c buffalo.Context) error {
 		return c.Error(http.StatusBadRequest, err)
 	}
 
+	if req.Mountpoint == "i1820" {
+		// let them pass, they have suffered enough
+		c.Response().Header().Add("cache-control", fmt.Sprintf("max-age=%d", 3600*24)) // valid for one day
+		return c.Render(http.StatusOK, r.JSON(VernemqOKResponse))
+	}
+
 	thingID := strings.Split(req.Topic, "/")[1]
 
 	t, err := pm.ThingByID(c, thingID)
@@ -96,6 +102,12 @@ func (VernemqAuthPlugin) OnPublish(c buffalo.Context) error {
 	var req VernemqRequest
 	if err := c.Bind(&req); err != nil {
 		return c.Error(http.StatusBadRequest, err)
+	}
+
+	if req.Mountpoint == "i1820" {
+		// let them pass, they have suffered enough
+		c.Response().Header().Add("cache-control", fmt.Sprintf("max-age=%d", 3600*24)) // valid for one day
+		return c.Render(http.StatusOK, r.JSON(VernemqOKResponse))
 	}
 
 	thingID := strings.Split(req.Topic, "/")[1]
