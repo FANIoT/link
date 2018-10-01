@@ -46,13 +46,13 @@ type VernemqRequest struct {
 // VernemqResponse is a minimal responses structure for its webhook response data
 var (
 	VernemqOKResponse = struct {
-		Result string
+		Result string `json:"result"`
 	}{
 		Result: "ok",
 	}
 
 	VernemqErrorResponse = struct {
-		Result map[string]string
+		Result map[string]string `json:"result"`
 	}{
 		Result: map[string]string{
 			"error": "not ok",
@@ -80,7 +80,12 @@ func (VernemqAuthPlugin) OnSubscribe(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.JSON(VernemqOKResponse))
 	}
 
-	thingID := strings.Split(req.Topic, "/")[1]
+	// everybody only can subscribe on one topic
+	if len(req.Topics) != 1 {
+		return c.Render(http.StatusOK, r.JSON(VernemqErrorResponse))
+	}
+
+	thingID := strings.Split(req.Topics[0].Topic, "/")[1]
 
 	t, err := pm.ThingByID(c, thingID)
 	if err != nil {
