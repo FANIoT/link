@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"net/http"
 	"strconv"
 	"time"
 
@@ -102,9 +101,9 @@ func App() *buffalo.App {
 		// mqtt service (authorization module)
 		mqtt := app.Group("/mqtt")
 		{
-			mqtt.POST("/auth", func(c buffalo.Context) error {
-				return c.Render(http.StatusOK, r.JSON(true))
-			})
+			vmq := VernemqAuthPlugin{}
+			mqtt.POST("/auth/publish", vmq.OnPublish)
+			mqtt.POST("/auth/subscribe", vmq.OnSubscribe)
 		}
 		// ttn integration module
 		ttn := app.Group("/ttn")
