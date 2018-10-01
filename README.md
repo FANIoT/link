@@ -33,6 +33,13 @@ The second one is to set a particular device's state with the following JSON:
 }
 ```
 
+## Inner vs Outer Broker
+Link component publishes data for inner component on MQTT, sometimes
+inner and outer brokers are different so we have two following configuration
+for brokers:
+
+- `SYS_BROKER_URL # internal broker`
+- `USR_BROKER_URL # outer broker`
 
 ## MQTT Protocol
 For changing device state using mqtt protocol you can use following topic:
