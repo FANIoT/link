@@ -15,6 +15,7 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -24,8 +25,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const tID = "el-thing"
-const aName = "memory"
+const tID = "el-thing" // ThingID
+const aName = "memory" // Asset Name
+const pName = "her"    // Project Name
 
 func TestPipeline(t *testing.T) {
 	a := New()
@@ -36,13 +38,13 @@ func TestPipeline(t *testing.T) {
 		At:      ts,
 		Asset:   aName,
 		ThingID: tID,
-		Project: "nothing",
+		Project: pName,
 	})
 	// wait until data traverse pipeline
 	time.Sleep(1 * time.Second)
 
 	var d types.State
-	q := a.db.Collection("data").FindOne(context.Background(), bson.NewDocument(
+	q := a.db.Collection(fmt.Sprintf("data.%s.%s", pName, tID)).FindOne(context.Background(), bson.NewDocument(
 		bson.EC.SubDocument("timestamp", bson.NewDocument(
 			bson.EC.Time("$gte", ts),
 		)),
@@ -58,7 +60,7 @@ func BenchmarkPipeline(b *testing.B) {
 	a.Run()
 
 	wait := make(chan struct{})
-	a.cli.Subscribe("i1820/project/her/raw", 0, func(client paho.Client, message paho.Message) {
+	a.cli.Subscribe(fmt.Sprintf("i1820/projects/%s/things/%s/assets/%s/state", pName, tID, aName), 0, func(client paho.Client, message paho.Message) {
 		wait <- struct{}{}
 	})
 
@@ -69,7 +71,7 @@ func BenchmarkPipeline(b *testing.B) {
 			At:      ts,
 			Asset:   aName,
 			ThingID: tID,
-			Project: "nothing",
+			Project: pName,
 		})
 
 		<-wait
