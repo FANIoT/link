@@ -31,7 +31,7 @@ The second one is to set a particular device's state with the following JSON:
 }
 ```
 
-These sturcutres are standard data format of I1820 communications.
+These structures are standard data format of I1820 communications.
 
 Beside mentioned ways for setting state, I1820 supports another ways of sending data.
 users can send data with the custom format and then decode it with python scripts that are written by their slaves.
