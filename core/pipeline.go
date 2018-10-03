@@ -20,6 +20,7 @@ import (
 	"runtime"
 
 	"github.com/I1820/link/pm"
+	"github.com/I1820/types"
 	"github.com/sirupsen/logrus"
 )
 
@@ -94,7 +95,7 @@ func (a *Application) decodeStage() {
 			d.Value.Array = d.Raw.([]interface{})
 		}
 
-		go func() {
+		go func(d types.State) {
 			// marshal data into json
 			b, err := json.Marshal(d)
 			if err != nil {
@@ -113,7 +114,7 @@ func (a *Application) decodeStage() {
 				"asset":     d.Asset,
 				"thingid":   d.ThingID,
 			}).Infof("Publish decoded data: %s", d.Project)
-		}()
+		}(*d)
 		a.Logger.WithFields(logrus.Fields{
 			"component": "link",
 			"asset":     d.Asset,
