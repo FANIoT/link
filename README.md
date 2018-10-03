@@ -62,7 +62,7 @@ You must send standard JSON with the structure mentioned earlier.
 
 ## API
 
-Link parses and decodes ach incoming data then stores them into Mongo database.
+Link parses and decodes each incoming data then stores them into Mongo database.
 For providing a way for other components to have data, it publishes data into the following topics:
 
-- `i1820/projects/{project_id}/things/{thing_id}/assets/{asset_name}/data` raw and typed format of data
+- `i1820/projects/{project_id}/things/{thing_id}/assets/{asset_name}/state`
