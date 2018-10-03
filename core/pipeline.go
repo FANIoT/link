@@ -72,6 +72,8 @@ func (a *Application) decodeStage() {
 			d.Value.Number = v
 		case float32:
 			d.Value.Number = float64(v)
+		case int:
+			d.Value.Number = float64(v)
 		case int8:
 			d.Value.Number = float64(v)
 		case int16:
@@ -79,6 +81,8 @@ func (a *Application) decodeStage() {
 		case int32:
 			d.Value.Number = float64(v)
 		case int64:
+			d.Value.Number = float64(v)
+		case uint:
 			d.Value.Number = float64(v)
 		case uint8:
 			d.Value.Number = float64(v)
@@ -134,7 +138,7 @@ func (a *Application) insertStage() {
 	}).Info("Insert pipeline stage")
 
 	for d := range a.insertStream {
-		if _, err := a.db.Collection(fmt.Sprintf("data.%s.%s", d.Project, d.ThingID)).InsertOne(context.Background(), d); err != nil {
+		if _, err := a.db.Collection(fmt.Sprintf("data.%s.%s", d.Project, d.ThingID)).InsertOne(context.Background(), *d); err != nil {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
 				"asset":     d.Asset,
