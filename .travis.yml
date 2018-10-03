@@ -5,9 +5,7 @@ services:
   - docker
 
 env:
-  - GO_ENV=test
-  - SYS_BROKER_URL=tcp://127.0.0.1:1883
-  - USR_BROKER_URL=tcp://127.0.0.1:1883
+  - GO_ENV=test SYS_BROKER_URL=tcp://127.0.0.1:1883 USR_BROKER_URL=tcp://127.0.0.1:1883
 
 go_import_path: github.com/I1820/link
 
