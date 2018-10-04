@@ -50,6 +50,15 @@ func (a *Application) projectStage() {
 
 		a.decodeStream <- d
 	}
+
+	a.Logger.WithFields(logrus.Fields{
+		"component": "link",
+	}).Info("Project pipeline stage is going out")
+	select {
+	case a.projectCloseChan <- struct{}{}:
+		close(a.decodeStream)
+	default:
+	}
 }
 
 // decodeStage decodes each data and fills value section.
@@ -64,12 +73,12 @@ func (a *Application) decodeStage() {
 	}).Info("Decode pipeline stage")
 
 	for d := range a.decodeStream {
-		switch v := d.Raw.(type) {
-		case string:
+		switch v := d.Raw.(type) { // find type of raw value
+		case string: // string
 			d.Value.String = v
-		case bool:
+		case bool: // boolean
 			d.Value.Boolean = v
-		case float64:
+		case float64: // number
 			d.Value.Number = v
 		case float32:
 			d.Value.Number = float64(v)
@@ -93,9 +102,9 @@ func (a *Application) decodeStage() {
 			d.Value.Number = float64(v)
 		case uint64:
 			d.Value.Number = float64(v)
-		case interface{}:
+		case interface{}: // object
 			d.Value.Object = d.Raw
-		case []interface{}:
+		case []interface{}: // array
 			d.Value.Array = d.Raw.([]interface{})
 		}
 
@@ -127,6 +136,15 @@ func (a *Application) decodeStage() {
 
 		a.insertStream <- d
 	}
+
+	a.Logger.WithFields(logrus.Fields{
+		"component": "link",
+	}).Info("Decode pipeline stage is going")
+	select {
+	case a.decodeCloseChan <- struct{}{}:
+		close(a.insertStream)
+	default:
+	}
 }
 
 // insertStage inserts each data to database
@@ -153,4 +171,9 @@ func (a *Application) insertStage() {
 			}).Infof("Insert into database with value: %+v", d.Value)
 		}
 	}
+
+	a.Logger.WithFields(logrus.Fields{
+		"component": "link",
+	}).Info("Insert pipeline stage is going")
+	a.insertCloseCounter.Done()
 }

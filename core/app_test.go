@@ -41,8 +41,7 @@ func TestPipeline(t *testing.T) {
 		ThingID: tID,
 		Project: pName,
 	}))
-	// wait until data traverse pipeline
-	time.Sleep(2 * time.Second)
+	a.Exit()
 
 	var d types.State
 	q := a.db.Collection(fmt.Sprintf("data.%s.%s", pName, tID)).FindOne(context.Background(), bson.NewDocument(
