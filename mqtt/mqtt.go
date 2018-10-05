@@ -29,7 +29,6 @@ import (
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
-
 }
 
 // Service of link component
@@ -71,12 +70,17 @@ func (s *Service) handler(client paho.Client, message paho.Message) {
 	}).Infof("Marshal on %v", states)
 
 	for name, state := range states {
-		s.app.Data(types.State{
+		if err := s.app.Data(types.State{
 			Raw:     state.Value,
 			At:      state.At,
 			ThingID: thingID,
 			Asset:   name,
-		})
+		}); err != nil {
+			s.app.Logger.WithFields(logrus.Fields{
+				"component": "mqtt service",
+				"topic":     message.Topic(),
+			}).Errorf("Send data to application failed with %s", err)
+		}
 	}
 }
 
@@ -103,7 +107,7 @@ func (s *Service) Run() error {
 	})
 	s.cli = paho.NewClient(opts)
 
-	// Connect to the MQTT Server.
+	// Connect to the MQTT Broker.
 	if t := s.cli.Connect(); t.Wait() && t.Error() != nil {
 		return t.Error()
 	}
