@@ -20,6 +20,7 @@ import (
 
 	"github.com/I1820/link/pm"
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/envy"
 )
 
 // VernemqAuthPlugin is an authentication plugin based vernemq webhooks
@@ -74,7 +75,7 @@ func (VernemqAuthPlugin) OnSubscribe(c buffalo.Context) error {
 		return c.Error(http.StatusBadRequest, err)
 	}
 
-	if req.Mountpoint == "i1820" {
+	if req.Mountpoint == "i1820" || req.Username == envy.Get("USR_BROKER_USER", "ella") {
 		// let them pass, they have suffered enough
 		c.Response().Header().Add("cache-control", fmt.Sprintf("max-age=%d", 3600*24)) // valid for one day
 		return c.Render(http.StatusOK, r.JSON(VernemqOKResponse))
@@ -109,7 +110,7 @@ func (VernemqAuthPlugin) OnPublish(c buffalo.Context) error {
 		return c.Error(http.StatusBadRequest, err)
 	}
 
-	if req.Mountpoint == "i1820" {
+	if req.Mountpoint == "i1820" || req.Username == envy.Get("USR_BROKER_USER", "ella") {
 		// let them pass, they have suffered enough
 		c.Response().Header().Add("cache-control", fmt.Sprintf("max-age=%d", 3600*24)) // valid for one day
 		return c.Render(http.StatusOK, r.JSON(VernemqOKResponse))
