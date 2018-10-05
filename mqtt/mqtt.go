@@ -97,7 +97,7 @@ func (s *Service) Run() error {
 	opts.SetUsername(envy.Get("USR_BROKER_USER", "ella"))
 	opts.SetClientID(fmt.Sprintf("I1820-mqs-link-%d", rand.Intn(1024)))
 	opts.SetOnConnectHandler(func(client paho.Client) {
-		if t := s.cli.Subscribe("$share/i1820-link/things/+/state", 0, s.handler); t.Error() != nil {
+		if t := s.cli.Subscribe("$share/i1820-link/things/+/state", 0, s.handler); t.Wait() && t.Error() != nil {
 			s.app.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
 		}
 	})
