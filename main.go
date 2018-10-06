@@ -35,6 +35,7 @@ func main() {
 	runtime.Gosched()
 	// we must wait for http service to go online before starting the
 	// services. maybe in the future we change this behaviour.
+	fmt.Println("Wait for http service to really start")
 	time.Sleep(10 * time.Second)
 	// non-http services
 	if err := mqtt.New().Run(); err != nil {
