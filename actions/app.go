@@ -109,7 +109,7 @@ func App() *buffalo.App {
 		http := app.Group("/http")
 		{
 			http.Use(HTTPAuthorize)
-			http.POST("/{thing_id}", HTTPHandler)
+			http.POST("/push/{thing_id}", HTTPHandler)
 		}
 		// ttn integration module
 		ttn := app.Group("/ttn")
