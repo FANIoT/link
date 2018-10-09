@@ -73,7 +73,7 @@ func HTTPHandler(c buffalo.Context) error {
 
 	if err := codec.NewDecoder(c.Request().Body, h).Decode(&states); err != nil {
 		coreApp.Logger.WithFields(logrus.Fields{
-			"component": "ttn service",
+			"component": "http service",
 		}).Errorf("Incoming data from %s with pid: %s is not a valid %s: %s", thingID, projectID, h.Name(), err)
 
 		return c.Render(http.StatusOK, r.JSON(true))
