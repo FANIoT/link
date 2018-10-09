@@ -105,6 +105,12 @@ func App() *buffalo.App {
 			mqtt.POST("/auth/publish", vmq.OnPublish)
 			mqtt.POST("/auth/subscribe", vmq.OnSubscribe)
 		}
+		// http service
+		http := app.Group("/http")
+		{
+			http.Use(HTTPAuthorize)
+			http.POST("/{thing_id}", HTTPHandler)
+		}
 		// ttn integration module
 		ttn := app.Group("/ttn")
 		{
