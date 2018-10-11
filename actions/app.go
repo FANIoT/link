@@ -74,8 +74,18 @@ func App() *buffalo.App {
 			[]string{"path", "method", "code"},
 		)
 
+		rc := prometheus.NewCounterVec(
+			prometheus.CounterOpts{
+				Namespace: "link",
+				Name:      "request_counter",
+				Help:      "How many HTTP requests processed",
+			},
+			[]string{"path", "method", "code"},
+		)
+
 		prometheus.NewGoCollector()
 		prometheus.MustRegister(rds)
+		prometheus.MustRegister(rc)
 
 		app.Use(func(next buffalo.Handler) buffalo.Handler {
 			return func(c buffalo.Context) error {
@@ -90,6 +100,12 @@ func App() *buffalo.App {
 						"code":   strconv.Itoa(ws.Status),
 						"method": req.Method,
 					}).Observe(time.Since(now).Seconds())
+
+					rc.With(prometheus.Labels{
+						"path":   req.URL.String(),
+						"code":   strconv.Itoa(ws.Status),
+						"method": req.Method,
+					}).Inc()
 				}()
 
 				return next(c)
