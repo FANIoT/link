@@ -11,6 +11,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -25,18 +26,22 @@ import (
 func main() {
 	fmt.Println("18.20 at Sep 07 2016 7:20 IR721")
 
-	// buffalo http service
-	go func() {
-		app := actions.App()
-		if err := app.Serve(); err != nil {
-			log.Fatalf("Buffalo Service failed with %s", err)
-		}
-	}()
-	runtime.Gosched()
-	// we must wait for http service to go online before starting the
-	// services. maybe in the future we change this behaviour.
-	fmt.Println("Wait for http service to really start")
-	time.Sleep(10 * time.Second)
+	var isHeadless = flag.Bool("headless", false, "Runs link in headless mode. In headless mode link just has its mqtt service")
+
+	if *isHeadless {
+		// buffalo http service
+		go func() {
+			app := actions.App()
+			if err := app.Serve(); err != nil {
+				log.Fatalf("Buffalo Service failed with %s", err)
+			}
+		}()
+		runtime.Gosched()
+		// we must wait for http service to go online before starting the
+		// services. maybe in the future we change this behaviour.
+		fmt.Println("Wait for http service to really start")
+		time.Sleep(10 * time.Second)
+	}
 	// non-http services
 	if err := mqtt.New().Run(); err != nil {
 		log.Fatalf("MQTT Service failed with %s", err)
