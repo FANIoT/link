@@ -84,6 +84,8 @@ func New() *Application {
 }
 
 // Run runs application. this function creates and connects mqtt client.
+// Application just submits data to mqtt so the authorization takes place in submit phase
+// not at registration phase.
 func (a *Application) Run() {
 	// create close channels here so we can run and stop single
 	// application many times
