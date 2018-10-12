@@ -28,7 +28,7 @@ func main() {
 
 	var isHeadless = flag.Bool("headless", false, "Runs link in headless mode. In headless mode link just has its mqtt service")
 
-	if *isHeadless {
+	if !*isHeadless {
 		// buffalo http service
 		go func() {
 			app := actions.App()
