@@ -20,7 +20,7 @@ before_install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
   # install linters
-  - go get -u github.com/golang/lint/golint     # Linter
+  - go get -u golang.org/x/lint/golint          # Linter
   - go get -u github.com/kisielk/errcheck       # errcheck checks that you checked errors.
 
   # docker services
