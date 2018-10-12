@@ -27,6 +27,7 @@ func main() {
 	fmt.Println("18.20 at Sep 07 2016 7:20 IR721")
 
 	var isHeadless = flag.Bool("headless", false, "Runs link in headless mode. In headless mode link just has its mqtt service")
+	flag.Parse()
 
 	if !*isHeadless {
 		// buffalo http service
