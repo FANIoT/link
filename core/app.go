@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"math/rand"
 	"runtime"
+	"sync"
 	"time"
 
 	"github.com/I1820/types"
@@ -33,6 +34,11 @@ func init() {
 
 // Application is a main part of link component that consists of
 // mqtt client and protocols that provide information for mqtt connectivity
+// Application is used with link services in order to process
+// Pipeline of application consists of following stages
+// - Project Stage
+// - Decode Stage
+// - Insert Stage
 type Application struct {
 	cli paho.Client
 
@@ -45,9 +51,17 @@ type Application struct {
 	projectStream chan *types.State
 	decodeStream  chan *types.State
 	insertStream  chan *types.State
+
+	// in order to close the pipeline nicely
+	projectCloseChan   chan struct{}  // project stage sends one value to this channel on its return
+	decodeCloseChan    chan struct{}  // decode stage sends one value to this channel on its return
+	insertCloseCounter sync.WaitGroup // count number of insert stages so `Exit` can wait for all of them
+
+	IsRun bool
 }
 
-// New creates new application. this function creates mqtt client
+// New creates new application. this function does not create mqtt client.
+// it creates mongodb session instance
 func New() *Application {
 	a := Application{}
 
@@ -69,8 +83,15 @@ func New() *Application {
 	return &a
 }
 
-// Run runs application. this function connects mqtt client and then register its topic
+// Run runs application. this function creates and connects mqtt client.
+// Application just submits data to mqtt so the authorization takes place in submit phase
+// not at registration phase.
 func (a *Application) Run() {
+	// create close channels here so we can run and stop single
+	// application many times
+	a.projectCloseChan = make(chan struct{}, 1)
+	a.decodeCloseChan = make(chan struct{}, 1)
+
 	// Create an MQTT client
 	/*
 		Port: 1883
@@ -82,7 +103,7 @@ func (a *Application) Run() {
 		AutoReconnect: True
 	*/
 	opts := paho.NewClientOptions()
-	opts.AddBroker(envy.Get("SYS_BROKER_URL", "tcp://127.0.0.1:1883"))
+	opts.AddBroker(envy.Get("SYS_BROKER_URL", "tcp://127.0.0.1:18083"))
 	opts.SetClientID(fmt.Sprintf("I1820-link-%d", rand.Intn(1024)))
 	opts.SetOrderMatters(false)
 	a.cli = paho.NewClient(opts)
@@ -103,13 +124,35 @@ func (a *Application) Run() {
 		go a.projectStage()
 		go a.decodeStage()
 		go a.insertStage()
+		a.insertCloseCounter.Add(1)
 	}
+
+	a.IsRun = true
+}
+
+// Exit closes mqtt connection then closes all channels and return from all pipeline stages
+func (a *Application) Exit() {
+	a.IsRun = false
+
+	// disconnect waiting time in milliseconds
+	var quiesce uint = 10
+	a.cli.Disconnect(quiesce)
+
+	// close project stream
+	close(a.projectStream)
+
+	// all channels are going to close
+	// so we are waiting for them
+	a.insertCloseCounter.Wait()
 }
 
 // Data sends incoming data into application for futher processing
 // incomming data must have raw, at, thingid and assets section of data
 // please note that this function is a blocking function.
 func (a *Application) Data(s types.State) error {
+	if !a.IsRun {
+		return fmt.Errorf("You cann't pass data into application when it is not running")
+	}
 	if s.Raw == nil || s.At.IsZero() {
 		return fmt.Errorf("Raw and At must not be zero")
 	}

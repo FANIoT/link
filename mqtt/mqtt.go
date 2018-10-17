@@ -29,7 +29,6 @@ import (
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
-
 }
 
 // Service of link component
@@ -71,12 +70,17 @@ func (s *Service) handler(client paho.Client, message paho.Message) {
 	}).Infof("Marshal on %v", states)
 
 	for name, state := range states {
-		s.app.Data(types.State{
+		if err := s.app.Data(types.State{
 			Raw:     state.Value,
 			At:      state.At,
 			ThingID: thingID,
 			Asset:   name,
-		})
+		}); err != nil {
+			s.app.Logger.WithFields(logrus.Fields{
+				"component": "mqtt service",
+				"topic":     message.Topic(),
+			}).Errorf("Send data to application failed with %s", err)
+		}
 	}
 }
 
@@ -94,15 +98,16 @@ func (s *Service) Run() error {
 	*/
 	opts := paho.NewClientOptions()
 	opts.AddBroker(envy.Get("USR_BROKER_URL", "tcp://127.0.0.1:1883"))
+	opts.SetUsername(envy.Get("USR_BROKER_USER", "ella"))
 	opts.SetClientID(fmt.Sprintf("I1820-mqs-link-%d", rand.Intn(1024)))
 	opts.SetOnConnectHandler(func(client paho.Client) {
-		if t := s.cli.Subscribe("$share/i1820-link/things/+/state", 0, s.handler); t.Error() != nil {
+		if t := s.cli.Subscribe("$share/i1820-link/things/+/state", 0, s.handler); t.Wait() && t.Error() != nil {
 			s.app.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
 		}
 	})
 	s.cli = paho.NewClient(opts)
 
-	// Connect to the MQTT Server.
+	// Connect to the MQTT Broker.
 	if t := s.cli.Connect(); t.Wait() && t.Error() != nil {
 		return t.Error()
 	}

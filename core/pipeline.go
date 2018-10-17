@@ -20,6 +20,7 @@ import (
 	"runtime"
 
 	"github.com/I1820/link/pm"
+	"github.com/I1820/types"
 	"github.com/sirupsen/logrus"
 )
 
@@ -49,6 +50,15 @@ func (a *Application) projectStage() {
 
 		a.decodeStream <- d
 	}
+
+	a.Logger.WithFields(logrus.Fields{
+		"component": "link",
+	}).Info("Project pipeline stage is going out")
+	select {
+	case a.projectCloseChan <- struct{}{}:
+		close(a.decodeStream)
+	default:
+	}
 }
 
 // decodeStage decodes each data and fills value section.
@@ -63,14 +73,16 @@ func (a *Application) decodeStage() {
 	}).Info("Decode pipeline stage")
 
 	for d := range a.decodeStream {
-		switch v := d.Raw.(type) {
-		case string:
+		switch v := d.Raw.(type) { // find type of raw value
+		case string: // string
 			d.Value.String = v
-		case bool:
+		case bool: // boolean
 			d.Value.Boolean = v
-		case float64:
+		case float64: // number
 			d.Value.Number = v
 		case float32:
+			d.Value.Number = float64(v)
+		case int:
 			d.Value.Number = float64(v)
 		case int8:
 			d.Value.Number = float64(v)
@@ -80,6 +92,8 @@ func (a *Application) decodeStage() {
 			d.Value.Number = float64(v)
 		case int64:
 			d.Value.Number = float64(v)
+		case uint:
+			d.Value.Number = float64(v)
 		case uint8:
 			d.Value.Number = float64(v)
 		case uint16:
@@ -88,13 +102,13 @@ func (a *Application) decodeStage() {
 			d.Value.Number = float64(v)
 		case uint64:
 			d.Value.Number = float64(v)
-		case interface{}:
+		case interface{}: // object
 			d.Value.Object = d.Raw
-		case []interface{}:
+		case []interface{}: // array
 			d.Value.Array = d.Raw.([]interface{})
 		}
 
-		go func() {
+		go func(d types.State) {
 			// marshal data into json
 			b, err := json.Marshal(d)
 			if err != nil {
@@ -113,7 +127,7 @@ func (a *Application) decodeStage() {
 				"asset":     d.Asset,
 				"thingid":   d.ThingID,
 			}).Infof("Publish decoded data: %s", d.Project)
-		}()
+		}(*d)
 		a.Logger.WithFields(logrus.Fields{
 			"component": "link",
 			"asset":     d.Asset,
@@ -121,6 +135,15 @@ func (a *Application) decodeStage() {
 		}).Infof("Decode with value: %+v", d.Value)
 
 		a.insertStream <- d
+	}
+
+	a.Logger.WithFields(logrus.Fields{
+		"component": "link",
+	}).Info("Decode pipeline stage is going")
+	select {
+	case a.decodeCloseChan <- struct{}{}:
+		close(a.insertStream)
+	default:
 	}
 }
 
@@ -134,7 +157,7 @@ func (a *Application) insertStage() {
 	}).Info("Insert pipeline stage")
 
 	for d := range a.insertStream {
-		if _, err := a.db.Collection(fmt.Sprintf("data.%s.%s", d.Project, d.ThingID)).InsertOne(context.Background(), d); err != nil {
+		if _, err := a.db.Collection(fmt.Sprintf("data.%s.%s", d.Project, d.ThingID)).InsertOne(context.Background(), *d); err != nil {
 			a.Logger.WithFields(logrus.Fields{
 				"component": "link",
 				"asset":     d.Asset,
@@ -148,4 +171,9 @@ func (a *Application) insertStage() {
 			}).Infof("Insert into database with value: %+v", d.Value)
 		}
 	}
+
+	a.Logger.WithFields(logrus.Fields{
+		"component": "link",
+	}).Info("Insert pipeline stage is going")
+	a.insertCloseCounter.Done()
 }

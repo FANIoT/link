@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"net/http"
 	"strconv"
 	"time"
 
@@ -62,8 +61,18 @@ func App() *buffalo.App {
 			[]string{"path", "method", "code"},
 		)
 
+		rc := prometheus.NewCounterVec(
+			prometheus.CounterOpts{
+				Namespace: "link",
+				Name:      "request_counter",
+				Help:      "How many HTTP requests processed",
+			},
+			[]string{"path", "method", "code"},
+		)
+
 		prometheus.NewGoCollector()
 		prometheus.MustRegister(rds)
+		prometheus.MustRegister(rc)
 
 		app.Use(func(next buffalo.Handler) buffalo.Handler {
 			return func(c buffalo.Context) error {
@@ -78,6 +87,12 @@ func App() *buffalo.App {
 						"code":   strconv.Itoa(ws.Status),
 						"method": req.Method,
 					}).Observe(time.Since(now).Seconds())
+
+					rc.With(prometheus.Labels{
+						"path":   req.URL.String(),
+						"code":   strconv.Itoa(ws.Status),
+						"method": req.Method,
+					}).Inc()
 				}()
 
 				return next(c)
@@ -89,9 +104,15 @@ func App() *buffalo.App {
 		// mqtt service (authorization module)
 		mqtt := app.Group("/mqtt")
 		{
-			mqtt.POST("/auth", func(c buffalo.Context) error {
-				return c.Render(http.StatusOK, r.JSON(true))
-			})
+			vmq := VernemqAuthPlugin{}
+			mqtt.POST("/auth/publish", vmq.OnPublish)
+			mqtt.POST("/auth/subscribe", vmq.OnSubscribe)
+		}
+		// http service
+		http := app.Group("/http")
+		{
+			http.Use(HTTPAuthorize)
+			http.POST("/push/{thing_id}", HTTPHandler)
 		}
 		// ttn integration module
 		ttn := app.Group("/ttn")

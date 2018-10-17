@@ -5,7 +5,7 @@ services:
   - docker
 
 env:
-  - GO_ENV=test
+  - GO_ENV=test SYS_BROKER_URL=tcp://127.0.0.1:1883 USR_BROKER_URL=tcp://127.0.0.1:1883
 
 go_import_path: github.com/I1820/link
 
@@ -20,7 +20,7 @@ before_install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
   # install linters
-  - go get -u github.com/golang/lint/golint     # Linter
+  - go get -u golang.org/x/lint/golint          # Linter
   - go get -u github.com/kisielk/errcheck       # errcheck checks that you checked errors.
 
   # docker services
