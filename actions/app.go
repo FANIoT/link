@@ -7,10 +7,9 @@ import (
 
 	"github.com/I1820/link/core"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/buffalo/middleware"
-	"github.com/gobuffalo/buffalo/middleware/ssl"
 	"github.com/gobuffalo/envy"
-	"github.com/unrolled/secure"
+	contenttype "github.com/gobuffalo/mw-contenttype"
+	paramlogger "github.com/gobuffalo/mw-paramlogger"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -38,26 +37,14 @@ func App() *buffalo.App {
 			},
 			SessionName: "_link_session",
 		})
-		// Automatically redirect to SSL
-		app.Use(ssl.ForceSSL(secure.Options{
-			SSLRedirect:     ENV == "production",
-			SSLProxyHeaders: map[string]string{"X-Forwarded-Proto": "https"},
-		}))
 
-		// set the request content type to JSON (until new version of buffalo)
-		app.Use(middleware.SetContentType("application/json"))
-		app.Use(func(next buffalo.Handler) buffalo.Handler {
-			return func(c buffalo.Context) error {
-				defer func() {
-					c.Response().Header().Set("Content-Type", "application/json")
-				}()
-
-				return next(c)
-			}
-		})
+		// If no content type is sent by the client
+		// the application/json will be set, otherwise the client's
+		// content type will be used.
+		app.Use(contenttype.Add("application/json"))
 
 		if ENV == "development" {
-			app.Use(middleware.ParameterLogger)
+			app.Use(paramlogger.ParameterLogger)
 		}
 
 		// core application provides a simple way for parse and store
