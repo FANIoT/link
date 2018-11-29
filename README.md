@@ -70,7 +70,7 @@ For providing a way for other components to have data, it publishes data into th
 ## Up and Running
 To build this module from source do the following steps
 
-1. Make sure MongoDB and Vernemq is up and running.
+1. Make sure MongoDB and Vernemq are up and running.
 
 2. Install the required dependencies (Please note that we use [dep](https://github.com/golang/dep) as our go package manager)
 ```sh
