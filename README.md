@@ -66,3 +66,21 @@ Link parses and decodes each incoming data then stores them into Mongo database.
 For providing a way for other components to have data, it publishes data into the following topics:
 
 - `i1820/projects/{project_id}/things/{thing_id}/assets/{asset_name}/state`
+
+## Up and Running
+To build this module from source do the following steps
+
+1. Make sure MongoDB and Vernemq is up and running.
+
+2. Install the required dependencies (Please note that we use [dep](https://github.com/golang/dep) as our go package manager)
+```sh
+dep ensure
+```
+
+3. Check the configuration in `.env` file. (You can use `.env.example` as an example configuration)
+
+4. Run :runner:
+```sh
+go build
+./link
+```
