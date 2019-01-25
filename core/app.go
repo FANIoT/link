@@ -21,7 +21,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/I1820/types"
+	"github.com/FANIoT/types"
 	paho "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gobuffalo/envy"
 	mgo "github.com/mongodb/mongo-go-driver/mongo"
@@ -104,7 +104,7 @@ func (a *Application) Run() {
 	*/
 	opts := paho.NewClientOptions()
 	opts.AddBroker(envy.Get("SYS_BROKER_URL", "tcp://127.0.0.1:18083"))
-	opts.SetClientID(fmt.Sprintf("I1820-link-%d", rand.Intn(1024)))
+	opts.SetClientID(fmt.Sprintf("FANIoT-link-%d", rand.Intn(1024)))
 	opts.SetOrderMatters(false)
 	a.cli = paho.NewClient(opts)
 

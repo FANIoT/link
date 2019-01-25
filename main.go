@@ -19,8 +19,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/I1820/link/actions"
-	"github.com/I1820/link/mqtt"
+	"github.com/FANIoT/link/actions"
+	"github.com/FANIoT/link/mqtt"
 )
 
 func main() {

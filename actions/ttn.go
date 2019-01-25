@@ -19,9 +19,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/I1820/link/pm"
-	"github.com/I1820/types"
-	"github.com/I1820/types/connectivity"
+	"github.com/FANIoT/link/pm"
+	"github.com/FANIoT/types"
+	"github.com/FANIoT/types/connectivity"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 	"github.com/mitchellh/mapstructure"

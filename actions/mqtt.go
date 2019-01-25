@@ -18,7 +18,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/I1820/link/pm"
+	"github.com/FANIoT/link/pm"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 )

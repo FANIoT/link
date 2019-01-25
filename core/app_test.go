@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/I1820/types"
+	"github.com/FANIoT/types"
 	paho "github.com/eclipse/paho.mqtt.golang"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"

@@ -18,8 +18,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/I1820/link/pm"
-	"github.com/I1820/types"
+	"github.com/FANIoT/link/pm"
+	"github.com/FANIoT/types"
 	"github.com/gobuffalo/buffalo"
 	"github.com/sirupsen/logrus"
 	"github.com/ugorji/go/codec"

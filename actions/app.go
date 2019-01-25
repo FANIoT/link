@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/I1820/link/core"
+	"github.com/FANIoT/link/core"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 	contenttype "github.com/gobuffalo/mw-contenttype"

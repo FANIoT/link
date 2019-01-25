@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/I1820/types"
+	"github.com/FANIoT/types"
 	"github.com/gobuffalo/envy"
 	mgo "github.com/mongodb/mongo-go-driver/mongo"
 	cache "github.com/patrickmn/go-cache"

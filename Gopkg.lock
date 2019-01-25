@@ -20,7 +20,7 @@
 [[projects]]
   branch = "master"
   digest = "1:70ea8853894297351bc68b25dc2c3a61f32c9341d7596bb9ed828dc73873349b"
-  name = "github.com/I1820/types"
+  name = "github.com/FANIoT/types"
   packages = [
     ".",
     "connectivity",
@@ -898,8 +898,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/I1820/types",
-    "github.com/I1820/types/connectivity",
+    "github.com/FANIoT/types",
+    "github.com/FANIoT/types/connectivity",
     "github.com/eclipse/paho.mqtt.golang",
     "github.com/gobuffalo/buffalo",
     "github.com/gobuffalo/buffalo/render",

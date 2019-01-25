@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/I1820/link/pm"
-	"github.com/I1820/types"
+	"github.com/FANIoT/link/pm"
+	"github.com/FANIoT/types"
 	"github.com/sirupsen/logrus"
 )
 

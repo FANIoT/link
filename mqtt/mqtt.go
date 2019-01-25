@@ -20,8 +20,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/I1820/link/core"
-	"github.com/I1820/types"
+	"github.com/FANIoT/link/core"
+	"github.com/FANIoT/types"
 	paho "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gobuffalo/envy"
 	"github.com/sirupsen/logrus"
@@ -99,7 +99,7 @@ func (s *Service) Run() error {
 	opts := paho.NewClientOptions()
 	opts.AddBroker(envy.Get("USR_BROKER_URL", "tcp://127.0.0.1:1883"))
 	opts.SetUsername(envy.Get("USR_BROKER_USER", "ella"))
-	opts.SetClientID(fmt.Sprintf("I1820-mqs-link-%d", rand.Intn(1024)))
+	opts.SetClientID(fmt.Sprintf("FANIoT-mqs-link-%d", rand.Intn(1024)))
 	opts.SetOnConnectHandler(func(client paho.Client) {
 		if t := s.cli.Subscribe("$share/i1820-link/things/+/state", 0, s.handler); t.Wait() && t.Error() != nil {
 			s.app.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
